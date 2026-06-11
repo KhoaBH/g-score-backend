@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('dashboard');
+    return redirect()->route('chart');
 });
-Route::get('/chart', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::get('/chart', [DashboardController::class, 'chart'])->name('chart');
+Route::get('/search', [DashboardController::class, 'search'])->name('search');
+Route::get('/ranking', [DashboardController::class, 'ranking'])->name('ranking');

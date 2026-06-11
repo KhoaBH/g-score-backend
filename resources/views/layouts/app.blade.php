@@ -13,7 +13,7 @@
         .nav-btn.active { background:#dce8f5; color:#1a56a0; font-weight:500; }
     </style>
 </head>
-<body class="antialiased font-sans" x-data="{ currentTab: 'search' }">
+<body class="antialiased font-sans">
 
     <div class="flex min-h-screen">
 
@@ -28,18 +28,18 @@
                 </div>
 
                 <nav class="p-3" style="display:flex; flex-direction:column; gap:2px;">
-                    <button class="nav-btn" :class="currentTab === 'search' ? 'active' : ''" @click="currentTab = 'search'">
+                    <a href="{{ route('search') }}" class="nav-btn {{ request()->routeIs('search') ? 'active' : '' }}">
                         <svg style="width:16px;height:16px;flex-shrink:0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                         Tra cứu điểm
-                    </button>
-                    <button class="nav-btn" :class="currentTab === 'chart' ? 'active' : ''" @click="currentTab = 'chart'">
+                    </a>
+                    <a href="{{ route('chart') }}" class="nav-btn {{ request()->routeIs('chart') ? 'active' : '' }}">
                         <svg style="width:16px;height:16px;flex-shrink:0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-7"/></svg>
                         Phổ điểm
-                    </button>
-                    <button class="nav-btn" :class="currentTab === 'ranking' ? 'active' : ''" @click="currentTab = 'ranking'">
+                    </a>
+                    <a href="{{ route('ranking') }}" class="nav-btn {{ request()->routeIs('ranking') ? 'active' : '' }}">
                         <svg style="width:16px;height:16px;flex-shrink:0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
                         Top 10 khối A
-                    </button>
+                    </a>
                 </nav>
             </div>
 
