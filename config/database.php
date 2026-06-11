@@ -75,7 +75,11 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'schema' => 'public',
-            'sslmode' => 'prefer',
+            'sslmode' => 'require',
+            'options'  => [
+                PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
+            ],
+            'application_name' => 'app',
         ],
 
         'sqlsrv' => [
