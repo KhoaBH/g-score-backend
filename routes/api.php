@@ -18,3 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route ::get('/chart/{subject?}', [DashboardController::class, 'chartApi'])->name('api.chart');
+Route ::get('/search/{sbd?}', [DashboardController::class, 'findBySBD'])->name('api.search');

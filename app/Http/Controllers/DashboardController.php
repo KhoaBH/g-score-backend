@@ -31,6 +31,10 @@ class DashboardController extends Controller
 
         return response()->json($data);
     }
+    public function findBySBD($sbd = null){
+        $result = $this->scoreService->findBySBD($sbd);
+        return response()->json($result);
+    }
 
     public function search(){
         return view('dashboard', ['tab' => 'search']);

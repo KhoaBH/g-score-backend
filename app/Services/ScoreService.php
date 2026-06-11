@@ -6,9 +6,11 @@ use Illuminate\Support\Facades\DB;
 
 class ScoreService
 {
-    public function findBySBD($sbd){
-        return DB::table('scores')->where('sbd', $sbd)->first();
+    public function findBySBD($sbd = null){
+        $result =  DB::table('scores')->where('sbd', $sbd)->first();
+        return $result;
     }
+
     public function getChartData($subject = 'toan'){
         $total = DB::table('scores')->count();
         $total_subject = DB::table('scores')->whereNotNull($subject)->count();
