@@ -12,6 +12,10 @@ class DashboardController extends Controller
     {
         $this->scoreService = $scoreService;
     }
+    public function rankingApi($group = 'A'){
+        $results = $this->scoreService->ranking($group);
+        return response()->json($results);
+    }
 
     public function chart($subject = 'toan'){
         $subjects = ['toan','ngu_van','ngoai_ngu','vat_li','hoa_hoc','sinh_hoc','lich_su','dia_li','gdcd'];

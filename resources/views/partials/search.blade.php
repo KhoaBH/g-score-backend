@@ -57,7 +57,7 @@ $subjects = [
                     <td class="px-6 py-3 text-sm" style="color:#5b7a99;">
                         {{ $label }}
                         @if($key === 'ngoai_ngu')
-                            <span id="ma-ngoai-ngu" class="text-xs ml-1.5" style="color:#7a9ab8; display:none;"></span>
+                            <span id="ma-ngoai-ngu" class="text-xs ml-1.5" style="color:#7a9ab8;"></span>
                         @endif
                     </td>
                     <td class="px-6 py-3 text-right text-sm font-semibold">

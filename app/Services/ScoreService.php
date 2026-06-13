@@ -10,7 +10,36 @@ class ScoreService
         $result =  DB::table('scores')->where('sbd', $sbd)->first();
         return $result;
     }
+    public function ranking($group = 'A')
+    {
+        $formulas = [
+            'A'   => 'toan + vat_li + hoa_hoc',
+            'B'   => 'toan + hoa_hoc + sinh_hoc',
+            'A01' => 'toan + vat_li + ngoai_ngu',
+            'D'   => 'toan + ngu_van + ngoai_ngu',
+        ];
 
+        $subjects = [
+            'A'   => ['toan', 'vat_li', 'hoa_hoc'],
+            'B'   => ['toan', 'hoa_hoc', 'sinh_hoc'],
+            'A01' => ['toan', 'vat_li', 'ngoai_ngu'],
+            'D'   => ['toan', 'ngu_van', 'ngoai_ngu'],
+        ];
+
+        $formula = $formulas[$group] ?? $formulas['A'];
+
+        $query = DB::table('scores')
+            ->select('sbd', 'toan', 'ngu_van', 'ngoai_ngu', 'vat_li', 'hoa_hoc', 'sinh_hoc', 'lich_su', 'dia_li', 'gdcd')
+            ->selectRaw("($formula) as total_score");
+
+        foreach ($subjects[$group] ?? $subjects['A'] as $s) {
+            $query->whereNotNull($s);
+        }
+
+        $results = $query->orderByDesc('total_score')->limit(10)->get();
+
+        return response()->json($results);
+    }
     public function getChartData($subject = 'toan'){
         $total = DB::table('scores')->count();
         $total_subject = DB::table('scores')->whereNotNull($subject)->count();
