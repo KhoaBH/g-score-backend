@@ -48,34 +48,20 @@ class ScoreService
         $scoreDistribution = DB::table('scores')
         ->selectRaw("
             CASE 
-                WHEN $subject >= 0 AND $subject <= 1 THEN '0-1'
-                WHEN $subject > 1 AND $subject <= 2 THEN '1-2'
-                WHEN $subject > 2 AND $subject <= 3 THEN '2-3'
-                WHEN $subject > 3 AND $subject <= 4 THEN '3-4'
-                WHEN $subject > 4 AND $subject <= 5 THEN '4-5'
-                WHEN $subject > 5 AND $subject <= 6 THEN '5-6'
-                WHEN $subject > 6 AND $subject <= 7 THEN '6-7'
-                WHEN $subject > 7 AND $subject <= 8 THEN '7-8'
-                WHEN $subject > 8 AND $subject <= 9 THEN '8-9'
-                when $subject > 9 AND $subject <= 9.5 THEN '9-9.5'
-                WHEN $subject > 9.5 AND $subject <= 10 THEN '9.5-10'
+                WHEN $subject >= 0 AND $subject <= 4 THEN '0-4'
+                WHEN $subject > 4 AND $subject <= 6 THEN '4-6'
+                WHEN $subject > 6 AND $subject <= 8 THEN '6-8'
+                WHEN $subject >= 8 AND $subject <= 10 THEN '8-10'
             END as score_range,
             COUNT(*) as total
         ")
         ->whereNotNull($subject) 
         ->groupByRaw("
             CASE 
-                WHEN $subject >= 0 AND $subject <= 1 THEN '0-1'
-                WHEN $subject > 1 AND $subject <= 2 THEN '1-2'
-                WHEN $subject > 2 AND $subject <= 3 THEN '2-3'
-                WHEN $subject > 3 AND $subject <= 4 THEN '3-4'
-                WHEN $subject > 4 AND $subject <= 5 THEN '4-5'
-                WHEN $subject > 5 AND $subject <= 6 THEN '5-6'
-                WHEN $subject > 6 AND $subject <= 7 THEN '6-7'
-                WHEN $subject > 7 AND $subject <= 8 THEN '7-8'
-                WHEN $subject > 8 AND $subject <= 9 THEN '8-9'
-                when $subject > 9 AND $subject <= 9.5 THEN '9-9.5'
-                WHEN $subject > 9.5 AND $subject <= 10 THEN '9.5-10'
+                WHEN $subject >= 0 AND $subject <= 4 THEN '0-4'
+                WHEN $subject > 4 AND $subject <= 6 THEN '4-6'
+                WHEN $subject > 6 AND $subject <= 8 THEN '6-8'
+                WHEN $subject >= 8 AND $subject <= 10 THEN '8-10'
             END
         ")
         ->orderByRaw("MIN($subject) ASC") // Sắp xếp các khoảng từ nhỏ đến lớn cho biểu đồ

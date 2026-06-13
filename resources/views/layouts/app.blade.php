@@ -11,20 +11,55 @@
         .nav-btn { width:100%; display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px; font-size:13px; text-align:left; cursor:pointer; transition:background 0.15s, color 0.15s; border:none; background:transparent; color:#5b7a99; }
         .nav-btn:hover { background:#e8eef5; color:#1e3a5f; }
         .nav-btn.active { background:#dce8f5; color:#1a56a0; font-weight:500; }
+
+        .sidebar { transition: transform 0.2s ease; }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 60;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                padding-left: 0 !important;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.3);
+                z-index: 55;
+            }
+            .overlay.open {
+                display: block;
+            }
+        }
     </style>
 </head>
-<body class="antialiased font-sans">
+<body class="antialiased font-sans" x-data="{ sidebarOpen: false }">
 
     <div class="flex min-h-screen">
 
-        <aside class="w-56 fixed h-full flex flex-col justify-between z-50"
+        {{-- Overlay cho mobile --}}
+        <div class="overlay" :class="{ 'open': sidebarOpen }" @click="sidebarOpen = false"></div>
+
+        <aside class="sidebar w-56 fixed h-full flex flex-col justify-between"
+               :class="{ 'open': sidebarOpen }"
                style="background:#eaf1f9; border-right:1px solid #cddaeb;">
             <div>
-                <div class="h-14 flex items-center gap-2.5 px-5"
+                <div class="h-14 flex items-center justify-between px-5"
                      style="border-bottom:1px solid #cddaeb;">
-                    <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs font-medium"
-                         style="background:#1a56a0; color:#fff;">G</div>
-                    <span class="text-sm font-medium" style="color:#1e3a5f;">G-Scores</span>
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs font-medium"
+                             style="background:#1a56a0; color:#fff;">G</div>
+                        <span class="text-sm font-medium" style="color:#1e3a5f;">G-Scores</span>
+                    </div>
+                    {{-- Close button - chỉ hiện trên mobile --}}
+                    <button @click="sidebarOpen = false" class="md:hidden" style="color:#5b7a99;">
+                        <svg style="width:18px;height:18px" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    </button>
                 </div>
 
                 <nav class="p-3" style="display:flex; flex-direction:column; gap:2px;">
@@ -48,17 +83,17 @@
             </div>
         </aside>
 
-        <div class="flex-1 pl-56 flex flex-col min-h-screen">
-            <header class="h-14 sticky top-0 z-40 flex items-center justify-between px-6"
+        <div class="main-content flex-1 pl-56 flex flex-col min-h-screen">
+            <header class="h-14 sticky top-0 z-40 flex items-center gap-3 px-6"
                     style="background:#ffffff; border-bottom:1px solid #cddaeb;">
+                {{-- Hamburger - chỉ hiện trên mobile --}}
+                <button @click="sidebarOpen = true" class="md:hidden" style="color:#5b7a99;">
+                    <svg style="width:20px;height:20px" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                </button>
                 <span class="text-sm" style="color:#5b7a99;">Kỳ thi THPT Quốc Gia 2024</span>
-                <span class="text-xs px-2.5 py-1 rounded-full"
-                      style="background:#dce8f5; color:#1a56a0; border:1px solid #b3cceb;">
-                    Neon DB
-                </span>
             </header>
 
-            <main class="p-6 grow">
+            <main class="p-4 md:p-6 grow">
                 @yield('content')
             </main>
         </div>
