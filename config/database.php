@@ -75,7 +75,7 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'schema' => 'public',
-            'sslmode' => 'require',
+            'sslmode' => env('PGSSLMODE', 'prefer'),
             'options'  => [
                 PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
             ],
