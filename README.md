@@ -1,64 +1,149 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# G-Scores
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A web application for analyzing and looking up Vietnam's 2024 National High School Graduation Exam (THPT) results. Built with Laravel and PostgreSQL.
 
-## About Laravel
+## Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+G-Scores ingests the raw 2024 THPT exam score dataset (~1 million records) into a PostgreSQL database and provides three core features:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Score Lookup** — search for an individual student's results by registration number (SBD)
+- **Score Distribution Report** — view statistics (count, average, median, max, min, pass rate) and a bar chart of score distribution across four levels (`<4`, `4-6`, `6-8`, `>=8`) for each subject
+- **Top 10 Ranking** — view the top 10 students by combined score for admission groups A, A01, B, and D
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tech Stack
 
-## Learning Laravel
+- **Backend:** Laravel (PHP)
+- **Database:** PostgreSQL
+- **Frontend:** Blade templates, Tailwind CSS, Chart.js
+- **Local environment:** Docker Compose (PostgreSQL)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Requirements
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP >= 8.1
+- Composer
+- Docker & Docker Compose
 
-## Laravel Sponsors
+## Getting Started
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### 1. Clone the repository
 
-### Premium Partners
+```bash
+git clone https://github.com/KhoaBH/g-score-backend.git
+cd g-score-backend
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### 2. Install dependencies
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Configure environment
 
-## Code of Conduct
+```bash
+cp .env.example .env      # Windows: copy .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The default `.env` is preconfigured to connect to the local Docker PostgreSQL instance:
 
-## Security Vulnerabilities
+```dotenv
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=g_score
+DB_USERNAME=postgres
+DB_PASSWORD=password
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Start the database
 
-## License
+```bash
+docker compose up -d
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Run migrations and seed the database
+
+```bash
+php artisan migrate:fresh
+php artisan db:seed --class=ScoreSeeder
+```
+
+> The seeder reads `database/seeders/diem_thi_thpt_2024.csv` (~1 million rows) and imports it in chunks. If you encounter a memory limit error, run:
+> ```bash
+> php -d memory_limit=1G artisan db:seed --class=ScoreSeeder
+> ```
+
+### 6. Run the application
+
+```bash
+php artisan serve
+```
+
+Visit **http://localhost:8000**
+
+## Project Structure
+
+```
+app/
+├── Http/Controllers/
+│   └── DashboardController.php   # Page + API endpoints
+├── Services/
+│   └── ScoreService.php          # Score aggregation & statistics logic
+database/
+├── migrations/
+│   └── create_scores_table.php
+├── seeders/
+│   ├── ScoreSeeder.php
+│   └── diem_thi_thpt_2024.csv
+resources/views/
+├── layouts/app.blade.php
+├── dashboard.blade.php
+└── partials/
+    ├── search.blade.php          # Score lookup
+    ├── chart.blade.php             # Score distribution report
+    └── ranking.blade.php          # Top 10 ranking
+```
+
+## Database Schema
+
+Table `scores`:
+
+| Column | Type | Description |
+|---|---|---|
+| `sbd` | string (PK) | Registration number |
+| `toan` | decimal | Math |
+| `ngu_van` | decimal | Literature |
+| `ngoai_ngu` | decimal | Foreign language |
+| `vat_li` | decimal | Physics |
+| `hoa_hoc` | decimal | Chemistry |
+| `sinh_hoc` | decimal | Biology |
+| `lich_su` | decimal | History |
+| `dia_li` | decimal | Geography |
+| `gdcd` | decimal | Civic education |
+| `ma_ngoai_ngu` | string | Foreign language code |
+
+## Features
+
+### Score Lookup
+Enter a registration number to view all subject scores for that candidate.
+
+### Score Distribution Report
+Select a subject to view:
+- Total exam entries, average, median, highest, and lowest scores
+- Pass rate (≥ 5.0)
+- A bar chart showing the number of students in 4 score bands: `<4`, `4-6`, `6-8`, `>=8`
+
+### Top 10 Ranking
+Select an admission group to view the top 10 candidates by combined score:
+
+| Group | Subjects |
+|---|---|
+| A | Math, Physics, Chemistry |
+| A01 | Math, Physics, English |
+| B | Math, Chemistry, Biology |
+| D | Math, Literature, English |
+
+## Deployment Notes
+
+When deploying to a managed PostgreSQL provider that requires SNI-based endpoint routing (e.g. Neon), `AppServiceProvider` automatically appends the required `endpoint` option to the connection DSN when `DB_HOST` contains `neon.tech`. No additional configuration is needed for standard PostgreSQL hosts.
